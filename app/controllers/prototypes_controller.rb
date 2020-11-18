@@ -1,6 +1,6 @@
 class PrototypesController < ApplicationController
   before_action :authenticate_user!,only:[:edit,:new]
-  
+
   def index
     @prototypes = Prototype.all.order("created_at DESC")
   end
@@ -34,10 +34,10 @@ class PrototypesController < ApplicationController
   end
 
   def edit
-    unless user_signed_in?
+    @prototype = Prototype.find(params[:id])
+    unless user_signed_in? && current_user.id == @prototype.user_id
       redirect_to action: :index
     end
-    @prototype = Prototype.find(params[:id])
   end
 
   def destroy
@@ -50,4 +50,5 @@ class PrototypesController < ApplicationController
   def prototype_params
     params.require(:prototype).permit(:title,:catch_copy,:concept,:image).merge(user_id: current_user.id)
   end
+  
 end
